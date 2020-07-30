@@ -19,8 +19,12 @@ module.exports = {
     node: true,
     es6: true
   },
-
+  // 扩展就是直接用别人写好的lint规则，扩展支持三种类型：
+  // eslint:开头是ESlint官方的扩展，一共有两个，分别是eslint:recommended、eslint:all
+  // plugin:开头是插件类型的扩展
+  // npm包的扩展，npm扩展包必须以eslint-config开头，在extends里也可以省略前缀eslint-config
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
+  // eslint官方规则只能检查JavaScript的语法，对于vue单文件和JSX，eslint就不适用了，这时需要引入对应的eslint-plugin
   plugins: ['babel', 'prettier'],
 
   rules: {
