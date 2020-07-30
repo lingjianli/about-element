@@ -16,7 +16,7 @@
   },
   "lint-staged": {
     "*.{js,vue}": [
-      "vue-cli-service lint",
+      "npm run eslint",
       "git add -A"
     ],
     "*.{html,vue,css,sass,scss}": [
