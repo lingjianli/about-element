@@ -1,11 +1,13 @@
 module.exports = {
+  // 用来告诉eslint找当前配置文件不能往父级查找
   root: true,
-
+  // 定义全局变量
   globals: {
     process: true
   },
 
   parserOptions: {
+    // 指定eslint解析器，babel-eslint解析器是对babel解析器的包装
     parser: 'babel-eslint',
     sourceType: 'module',
     ecmaFeatures:{
@@ -13,14 +15,16 @@ module.exports = {
       legacyDecorators: true
     }
   },
-
+  // 指定想要启用的环境
   env: {
     browser: true,
     node: true,
     es6: true
   },
-
+  // eslint-plugin-vue
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
+  // plugins插件，可省略前缀eslint-plugin-,
+  // 以下插件分别为eslint-plugin-babel、eslint-plugin-prettier
   plugins: ['babel', 'prettier'],
 
   rules: {

@@ -13,9 +13,7 @@ export default {
       default: ''
     }
   },
-  created() {
-    debugger
-  }
+  created() {}
 }
 </script>
 
