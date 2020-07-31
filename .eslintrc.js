@@ -21,19 +21,15 @@ module.exports = {
     node: true,
     es6: true
   },
-<<<<<<< HEAD
-  // eslint-plugin-vue
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
-  // plugins插件，可省略前缀eslint-plugin-,
-  // 以下插件分别为eslint-plugin-babel、eslint-plugin-prettier
-=======
   // 扩展就是直接用别人写好的lint规则，扩展支持三种类型：
   // eslint:开头是ESlint官方的扩展，一共有两个，分别是eslint:recommended、eslint:all
   // plugin:开头是插件类型的扩展
   // npm包的扩展，npm扩展包必须以eslint-config开头，在extends里也可以省略前缀eslint-config
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
+
   // eslint官方规则只能检查JavaScript的语法，对于vue单文件和JSX，eslint就不适用了，这时需要引入对应的eslint-plugin
->>>>>>> 93bf8873bc83f0321dad7e24a0063dd512c9d8ed
+  // plugins插件，可省略前缀eslint-plugin-,
+  // 以下插件分别为eslint-plugin-babel、eslint-plugin-prettier
   plugins: ['babel', 'prettier'],
 
   rules: {
