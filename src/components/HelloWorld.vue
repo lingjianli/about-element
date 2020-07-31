@@ -13,7 +13,10 @@ export default {
       default: ''
     }
   },
-  created() {}
+  created() {
+    let obj = { a: 1, b: 2 }
+    console.log(obj)
+  }
 }
 </script>
 
@@ -23,8 +26,8 @@ h3 {
   margin: 40px 0 0;
 }
 ul {
-  list-style-type: none;
   padding: 0;
+  list-style-type: none;
 }
 li {
   display: inline-block;
@@ -32,5 +35,6 @@ li {
 }
 a {
   color: #42b983;
+  color: '#FFF';
 }
 </style>
