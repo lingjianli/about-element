@@ -34,26 +34,47 @@ export default {
     currentPage: {
       type: Number,
       default: 1
+    },
+    // 分页布局
+    pageLayout: {
+      type: String,
+      default: 'total,sizes,prev,pager,next,jumper'
     }
   },
   methods: {
     // 渲染分页
     $_renderPage(h) {
-      const { pagination, pageSize, total, currentPage } = this
+      const { pagination, pageSize, total, currentPage, pageLayout } = this
       return pagination ? (
         <div>
           <Pagination
             total={total}
             currentPage={currentPage}
             pageSize={pageSize}
-            layout="total,sizes,prev,pager,next,jumper"
+            layout={pageLayout}
+            {...{
+              on: {
+                'size-change': this.$_handlePageSizeChange,
+                'current-change': this.$_handlePageCurrentChange
+              }
+            }}
           />
         </div>
       ) : null
+    },
+    // 改变表格每页条数发生改变
+    $_handlePageSizeChange(pageSize) {
+      this.$emit('update:pageSize', pageSize)
+    },
+    // 表格页码发生改变
+    $_handlePageCurrentChange(currentPage) {
+      this.$emit('update:currentPage', currentPage)
+      this.$emit('page-change', {
+        currentPage
+      })
     }
   },
   render(h) {
-    console.log(33, h)
     const table = this
     const page = this.$_renderPage(h)
     return (

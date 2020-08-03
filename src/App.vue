@@ -1,16 +1,11 @@
 <template>
   <div id="app">
-    <cm-table />
+    <router-view />
   </div>
 </template>
 
 <script>
-export default {
-  created() {
-    console.log(process)
-    console.log(new Set([1, 2, 3]))
-  }
-}
+export default {}
 </script>
 
 <style lang="scss">
