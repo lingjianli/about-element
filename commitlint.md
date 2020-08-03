@@ -1,6 +1,13 @@
 #### Commit Message 规范格式
 
-commit 格式：
+1. 安装
+
+```
+npm install -g @commitlint/cli @commitlint/config-conventional
+```
+
+
+2. commit 格式：
 
 ```
 <commit-type>[(commit-scope)]:<commit-message>
@@ -16,3 +23,9 @@ commit 格式：
 - revert：分支回溯
 - style：样式相关
 - test：测试相关
+
+例如：
+```bash {cmd=true}
+git add .
+git commit -m "feat: 添加commitlint校验"
+```
