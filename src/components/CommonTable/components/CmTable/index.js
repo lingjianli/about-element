@@ -1,10 +1,15 @@
 import { Table, Pagination } from 'element-ui'
 import './index.scss'
 console.log(Table)
-
+const tableProps = {
+  defaultExpandAll: Table.props.defaultExpandAll,
+  treeProps: Table.props.treeProps,
+  expandRowKeys: Table.props.expandRowKeys
+}
 export default {
   name: 'CmTable',
   props: {
+    ...Table.props,
     // 表格数据
     data: {
       type: Array,
@@ -72,10 +77,39 @@ export default {
       this.$emit('page-change', {
         currentPage
       })
+    },
+    $_renderTable(h) {
+      const { data } = this
+      const originTableProps = Object.keys(tableProps).reduce(
+        (result, item) => {
+          result[item] = this[item]
+          return result
+        },
+        {}
+      )
+      const props = {
+        ...originTableProps,
+        ...this.$attrs
+      }
+      console.log(originTableProps, props)
+      const table = (
+        <div class="cm-table__container">
+          <Table
+            data={data}
+            border
+            {...{
+              props: {
+                ...props
+              }
+            }}
+          />
+        </div>
+      )
+      return table
     }
   },
   render(h) {
-    const table = this
+    const table = this.$_renderTable(h)
     const page = this.$_renderPage(h)
     return (
       <div class="cm-table">
