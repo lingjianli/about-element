@@ -1,4 +1,4 @@
-import { Table, Pagination } from 'element-ui'
+import { Table, Pagination, TableColumn } from 'element-ui'
 import './index.scss'
 console.log(Table)
 const tableProps = {
@@ -102,10 +102,138 @@ export default {
                 ...props
               }
             }}
-          />
+          >
+            {this.$_renderAllColumns(h)}
+          </Table>
         </div>
       )
       return table
+    },
+    // 渲染所有表格列，包括序列号和复选框列
+    $_renderAllColumns(h) {
+      const { columns } = this
+      const colNodes = [
+        // ...this.$_getSelectionColumn(h),
+        // ...this.$_getSequenceColumn(h)
+      ]
+      colNodes.push(...this.$_renderColumns(h, columns))
+      console.log(columns, colNodes)
+      return colNodes
+    },
+    // 复选框列
+    $_getSelectionColumn(h) {},
+    // 序列号列
+    $_getSequenceColumn(h) {},
+    // 渲染表格列
+    $_renderColumns(h, columns) {
+      console.log('render', columns)
+      return columns
+        .filter(column => {
+          const { hidden } = column
+          if (hidden !== undefined) {
+            if (typeof hidden === 'function') {
+              return hidden({
+                columns,
+                column
+              })
+            }
+            return hidden
+          }
+          return true
+        })
+        .map(column => {
+          const { useSlot, actions, editable, nests, link } = column
+          if (nests && nests.length) {
+            return this.$_renderNestColumn(h, column)
+          } else if (editable) {
+            return this.$_renderEditColumn(h, column)
+          } else if (useSlot) {
+            return this.$_renderSlotColumn(h, column)
+          } else if (actions && actions.length > 0) {
+            return this.$_renderActionColumn(h, column)
+          } else if (link) {
+            return this.$_renderLinkColumn(h, column)
+          } else {
+            return this.$_renderDefaultColumn(h, column)
+          }
+        })
+    },
+    $_renderNestColumn(h, column) {
+      console.log(column)
+    },
+    $_renderEditColumn(h, column) {
+      console.log(column)
+    },
+    $_renderSlotColumn(h, column) {
+      console.log(column)
+    },
+    // 渲染操作列
+    $_renderActionColumn(h, column) {
+      console.log('actions', column)
+      const {
+        label,
+        actions = [],
+        events = {},
+        align = 'center',
+        width = 120
+      } = column
+      return (
+        <TableColumn
+          resizable={false}
+          label={label}
+          align={align}
+          width={width}
+          {...{
+            scopedSlots: {
+              default: ({ row, column, $index }) => {
+                return this.$_renderBottons(
+                  h,
+                  actions,
+                  {
+                    type: 'text'
+                  },
+                  null,
+                  [row, column, $index]
+                )
+              }
+            },
+            on: {
+              ...events
+            }
+          }}
+        />
+      )
+    },
+    $_renderLinkColumn(h, column) {
+      console.log(column)
+    },
+    // 渲染默认列
+    $_renderDefaultColumn(h, column) {
+      const { events = {}, minWidth = '100', ...rest } = column
+      return (
+        <TableColumn
+          minWidth={minWidth}
+          {...{
+            props: rest,
+            on: {
+              ...events
+            }
+          }}
+        />
+      )
+    },
+    // 预处理操作按钮
+    _preActionButtons(actions, ...args) {
+      console.log(actions, args)
+      const analyseFunProp = prop => {
+        return typeof prop === 'function'
+      }
+      analyseFunProp
+    },
+    // 渲染按钮
+    // eslint-disable-next-line max-params
+    $_renderBottons(h, buttons, props, slot, args) {
+      console.log(h, buttons, props, slot, args)
     }
   },
   render(h) {
