@@ -7,7 +7,13 @@
       :current-page.sync="pageInfo.currentPage"
       :page-size.sync="pageInfo.pageSize"
       @current-change="handleCurrentChange"
-    />
+    >
+      <template v-slot:column>
+        <div>hhhh</div>
+        <div>hhhh</div>
+        <div>hhhh</div>
+      </template>
+    </cm-table>
   </div>
 </template>
 
@@ -27,6 +33,7 @@ export default {
       columns: [
         { prop: 'name', label: '广告组名称', width: 'auto', fixed: true },
         {
+          // 配置按钮
           actions: [
             {
               id: 'edit',
@@ -34,14 +41,23 @@ export default {
             },
             {
               id: 'follow',
-              text: '删除'
+              text: '删除',
+              click: (...args) => {
+                console.log(args)
+              }
             }
           ],
           label: '操作',
           width: 120
         },
-        { prop: 'landing_type', label: '推广目的' },
-        { prop: 'status', label: '广告组状态' },
+        {
+          prop: 'landing_type',
+          label: '推广目的',
+          formatter: row => {
+            return row.landing_type
+          }
+        },
+        { prop: 'status', label: '广告组状态', useSlot: true },
         { prop: 'budget', label: '组预算' }
       ],
       tableData: data
@@ -54,6 +70,9 @@ export default {
       },
       deep: true
     }
+  },
+  created() {
+    console.log(22222, this)
   },
   methods: {
     handleCurrentChange(currentPage) {

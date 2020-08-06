@@ -1,5 +1,15 @@
-import { Table, Pagination, TableColumn } from 'element-ui'
+import {
+  Table,
+  Pagination,
+  TableColumn,
+  Button,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem
+} from 'element-ui'
 import './index.scss'
+import { throttle } from 'lodash'
+
 console.log(Table)
 const tableProps = {
   defaultExpandAll: Table.props.defaultExpandAll,
@@ -117,7 +127,6 @@ export default {
         // ...this.$_getSequenceColumn(h)
       ]
       colNodes.push(...this.$_renderColumns(h, columns))
-      console.log(columns, colNodes)
       return colNodes
     },
     // 复选框列
@@ -165,11 +174,51 @@ export default {
       console.log(column)
     },
     $_renderSlotColumn(h, column) {
-      console.log(column)
+      console.log('useSlot', column)
+      const {
+        prop,
+        label,
+        minWidth = '120',
+        events = {},
+        align = 'left',
+        field,
+        ...rest
+      } = column
+      const columnScope = this.$scopedSlots.column
+      console.log(this.$scopedSlots)
+      console.log(TableColumn)
+      return (
+        <TableColumn
+          prop={prop}
+          label={label}
+          minWidth={minWidth}
+          align={align}
+          showOverflowTooltip
+          {...{
+            scopedSlots: {
+              default: scope => {
+                if (columnScope) {
+                  return columnScope({
+                    ...scope,
+                    prop,
+                    field,
+                    cellValue: scope.row[prop]
+                  })
+                }
+
+                return scope.row[prop]
+              }
+            },
+            props: rest,
+            on: {
+              ...events
+            }
+          }}
+        />
+      )
     },
     // 渲染操作列
     $_renderActionColumn(h, column) {
-      console.log('actions', column)
       const {
         label,
         actions = [],
@@ -186,7 +235,7 @@ export default {
           {...{
             scopedSlots: {
               default: ({ row, column, $index }) => {
-                return this.$_renderBottons(
+                return this.$_renderButtons(
                   h,
                   actions,
                   {
@@ -224,16 +273,80 @@ export default {
     },
     // 预处理操作按钮
     _preActionButtons(actions, ...args) {
-      console.log(actions, args)
       const analyseFunProp = prop => {
-        return typeof prop === 'function'
+        return typeof prop === 'function' ? prop(...args) : prop
       }
-      analyseFunProp
+      return actions
+        .filter(({ before = true }) => {
+          return analyseFunProp(before)
+        })
+        .map(({ click, disabled = false, children = [], ...rest }) => {
+          const onClick =
+            click &&
+            throttle(() => click(...args), 100, {
+              trailing: false
+            })
+          return {
+            click: onClick || (() => {}),
+            disabled: analyseFunProp(disabled),
+            children: this._preActionButtons(children, ...args),
+            ...rest
+          }
+        })
     },
     // 渲染按钮
     // eslint-disable-next-line max-params
-    $_renderBottons(h, buttons, props, slot, args) {
-      console.log(h, buttons, props, slot, args)
+    $_renderButtons(h, buttons, props, slot, args) {
+      const newActions = this._preActionButtons(buttons, ...args)
+      return newActions.map(btn => {
+        const { click, text, children, useSlot, directives = [], ...rest } = btn
+        const hasChildren = children && children.length
+        if (useSlot) {
+          if (!slot) {
+            throw new Error('请添加插槽')
+          }
+          return slot(btn, ...args)
+        }
+        const button = (
+          <Button
+            {...{ props: { directives, ...rest, ...props } }}
+            onClick={click}
+          >
+            {text}
+            {hasChildren ? (
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            ) : (
+              undefined
+            )}
+          </Button>
+        )
+        if (hasChildren) {
+          const events = {}
+          const dropdownClick = command => {
+            const click = events[command]
+            click(...args)
+          }
+          return (
+            <Dropdown onCommand={dropdownClick}>
+              {button}
+              <DropdownMenu slot="dropdown">
+                {children.map(({ id, text, click, ...rest }) => {
+                  if (id === undefined) {
+                    throw new Error('请为按钮添加id')
+                  }
+                  events[id] = click
+                  return (
+                    <DropdownItem command={id} key={id} {...{ props: rest }}>
+                      {text}
+                    </DropdownItem>
+                  )
+                })}
+              </DropdownMenu>
+            </Dropdown>
+          )
+        }
+        return button
+      })
     }
   },
   render(h) {
