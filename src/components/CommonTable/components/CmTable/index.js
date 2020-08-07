@@ -224,7 +224,8 @@ export default {
         actions = [],
         events = {},
         align = 'center',
-        width = 120
+        width = 120,
+        type = 'text'
       } = column
       return (
         <TableColumn
@@ -239,7 +240,7 @@ export default {
                   h,
                   actions,
                   {
-                    type: 'text'
+                    type
                   },
                   null,
                   [row, column, $index]
@@ -308,10 +309,7 @@ export default {
           return slot(btn, ...args)
         }
         const button = (
-          <Button
-            {...{ props: { directives, ...rest, ...props } }}
-            onClick={click}
-          >
+          <Button {...{ props: { directives, ...rest } }} onClick={click}>
             {text}
             {hasChildren ? (
               <i class="el-icon-arrow-down el-icon--right"></i>

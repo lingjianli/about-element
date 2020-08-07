@@ -37,18 +37,20 @@ export default {
           actions: [
             {
               id: 'edit',
-              text: '编辑'
+              text: '编辑',
+              type: 'text'
             },
             {
               id: 'follow',
               text: '删除',
+              type: 'text',
               click: (...args) => {
                 console.log(args)
               }
             }
           ],
           label: '操作',
-          width: 120
+          width: 250
         },
         {
           prop: 'landing_type',
